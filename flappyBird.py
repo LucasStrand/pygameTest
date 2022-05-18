@@ -1,11 +1,12 @@
-import pygame, sys
+import pygame, sys, random
 
 def draw_floor():
     screen.blit(floor_surface,(floor_x_pos,900))
     screen.blit(floor_surface,(floor_x_pos + 576,900))
 
 def create_pipe():
-    new_pipe = pipe_surface.get_rect(midtop = (600,512))
+    pipe_random_movement = random.randint(1, 400)
+    new_pipe = pipe_surface.get_rect(midtop = (600,312 + pipe_random_movement))
     return new_pipe
 
 def move_pipes(pipes):  
@@ -26,6 +27,7 @@ clock = pygame.time.Clock()
 # Game Variables
 gravity = 0.25
 bird_movement = 0
+
 
 bg_surface = pygame.image.load('sprites/background-day.png').convert()
 bg_surface = pygame.transform.scale2x(bg_surface)
@@ -57,7 +59,7 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 bird_movement = 0
-                bird_movement -= 12
+                bird_movement -= 8
         if event.type == SPAWNPIPE:
             pipe_list.append(create_pipe())
             
