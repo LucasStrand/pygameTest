@@ -14,6 +14,7 @@ gravity = 0.25
 bird_movement = 0
 floor_movement = 1
 pipe_movement = 5
+bird_starting_height = 512
 game_is_running = True
 
 game_over_surface = pygame.image.load('sprites/gameover.png')
@@ -28,7 +29,7 @@ floor_x_pos = 0
 
 bird_surface = pygame.image.load('sprites/bluebird-midflap.png').convert()
 bird_surface = pygame.transform.scale2x(bird_surface)
-bird_rect = bird_surface.get_rect(center = (100,512))
+bird_rect = bird_surface.get_rect(center = (100, bird_starting_height))
 
 pipe_surface = pygame.image.load('sprites/pipe-green.png')
 pipe_surface = pygame.transform.scale2x(pipe_surface)
@@ -47,7 +48,7 @@ def draw_floor():
 
 def create_pipe():
     pipe_random_movement = random.randint(1, 400)
-    new_pipe = pipe_surface.get_rect(midtop = (600,312 + pipe_random_movement))
+    new_pipe = pipe_surface.get_rect(midtop = (600, 312 + pipe_random_movement))
     return new_pipe
 
 def move_pipes(pipes):  
@@ -70,11 +71,27 @@ def check_collisions():
             bird_movement = 0
             floor_movement = 0
             pipe_movement = 0
-            game_is_running = False
             game_over()
 
 def game_over():
+    global game_is_running
     screen.blit(game_over_surface, (100, 200))
+    game_is_running = False
+
+def restart_game():
+    global gravity
+    global bird_movement
+    global floor_movement
+    global pipe_movement
+    global pipe_list
+    global game_is_running
+    gravity = 0.25
+    bird_movement = 0
+    floor_movement = 1
+    pipe_movement = 5
+    pipe_list = []
+    game_is_running = True
+    bird_rect.centery = bird_starting_height
 
 ######################################################################################################################################
 
@@ -88,6 +105,8 @@ while True:
             if event.key == pygame.K_SPACE and game_is_running:
                 bird_movement = 0
                 bird_movement -= 8
+            if event.key == pygame.K_SPACE and not game_is_running:
+                restart_game()
         if event.type == SPAWNPIPE and game_is_running:
             pipe_list.append(create_pipe())     
 
