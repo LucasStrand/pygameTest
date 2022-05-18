@@ -1,3 +1,4 @@
+from os import pipe
 import pygame, sys, random
     
 green = (0, 255, 0)
@@ -58,7 +59,9 @@ def move_pipes(pipes):
 def draw_pipes(pipes):
     for pipe in pipes:
         screen.blit(pipe_surface, pipe)
-        screen.blit(pipe_roof, pipe.move(0, -812)) 
+        screen.blit(pipe_roof, pipe.move(0, -812))
+        if bird_rect.colliderect(pipe):
+            print('bird collides with pipe')
 
 def check_collisions():
         if bird_rect.y >= 850:
@@ -90,8 +93,8 @@ def restart_game():
     floor_movement = 1
     pipe_movement = 5
     pipe_list = []
-    game_is_running = True
     bird_rect.centery = bird_starting_height
+    game_is_running = True
 
 ######################################################################################################################################
 
@@ -108,7 +111,7 @@ while True:
             if event.key == pygame.K_SPACE and not game_is_running:
                 restart_game()
         if event.type == SPAWNPIPE and game_is_running:
-            pipe_list.append(create_pipe())     
+            pipe_list.append(create_pipe())
 
     #set img
     screen.blit(bg_surface,(0,0))
@@ -122,6 +125,7 @@ while True:
     pipe_list = move_pipes(pipe_list) 
     draw_pipes(pipe_list)
     #if bird_rect == pipe_roof || pipe_surface
+
     #Floor
     floor_x_pos -= floor_movement
     draw_floor()
