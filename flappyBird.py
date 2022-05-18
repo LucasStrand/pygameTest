@@ -5,7 +5,7 @@ def draw_floor():
     screen.blit(floor_surface,(floor_x_pos + 576,900))
 
 def create_pipe():
-    new_pipe = pipe_surface.get_rect(midtop = (288,512))
+    new_pipe = pipe_surface.get_rect(midtop = (600,512))
     return new_pipe
 
 def move_pipes(pipes):
