@@ -14,7 +14,10 @@ gravity = 0.25
 bird_movement = 0
 floor_movement = 1
 pipe_movement = 5
+game_is_running = True
 
+game_over_surface = pygame.image.load('sprites/gameover.png')
+game_over_surface = pygame.transform.scale2x(game_over_surface)
 
 bg_surface = pygame.image.load('sprites/background-day.png').convert()
 bg_surface = pygame.transform.scale2x(bg_surface)
@@ -22,8 +25,6 @@ bg_surface = pygame.transform.scale2x(bg_surface)
 floor_surface = pygame.image.load('sprites/base.png')
 floor_surface = pygame.transform.scale2x(floor_surface)
 floor_x_pos = 0
-
-game_is_running = True
 
 bird_surface = pygame.image.load('sprites/bluebird-midflap.png').convert()
 bird_surface = pygame.transform.scale2x(bird_surface)
@@ -73,9 +74,7 @@ def check_collisions():
             game_over()
 
 def game_over():
-    game_over_font = pygame.font.Font("freesansbold.ttf", 60)
-    display_game_over = game_over_font.render("Game over", True, green, blue)
-    screen.blit(display_game_over, (200, 300))
+    screen.blit(game_over_surface, (100, 200))
 
 ######################################################################################################################################
 
