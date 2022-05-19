@@ -27,6 +27,7 @@ bg_surface = pygame.transform.scale2x(bg_surface)
 floor_surface = pygame.image.load('sprites/base.png')
 floor_surface = pygame.transform.scale2x(floor_surface)
 floor_x_pos = 0
+floor_y_pos = 900
 
 bird_surface = pygame.image.load('sprites/bluebird-midflap.png').convert()
 bird_surface = pygame.transform.scale2x(bird_surface)
@@ -37,6 +38,7 @@ pipe_surface = pygame.transform.scale2x(pipe_surface)
 pipe_roof = pygame.image.load('sprites/pipe-green.png')
 pipe_roof = pygame.transform.scale2x(pipe_roof)
 pipe_roof = pygame.transform.rotate(pipe_roof, 180)
+pipe_starting_x = 600
 
 pipe_list = []
 
@@ -46,12 +48,15 @@ pygame.time.set_timer(SPAWNPIPE,1200)
 ######################################################################################################################################
 
 def draw_floor():
-    screen.blit(floor_surface,(floor_x_pos,900))
-    screen.blit(floor_surface,(floor_x_pos + 576,900))
+    screen.blit(floor_surface,(floor_x_pos, floor_y_pos))
+    screen.blit(floor_surface,(floor_x_pos + 576, floor_y_pos))
 
 def create_pipe():
     pipe_random_movement = random.randint(1, 400)
-    new_pipes = [pipe_surface.get_rect(midtop = (600, 312 + pipe_random_movement)), pipe_roof.get_rect(midtop = (600, -512 + pipe_random_movement))]
+    new_pipes = [
+        pipe_surface.get_rect(midtop = (pipe_starting_x, 312 + pipe_random_movement)), 
+        pipe_roof.get_rect(midtop = (pipe_starting_x, -512 + pipe_random_movement))
+        ]
     return new_pipes
 
 def move_pipes(pipes):  
@@ -82,8 +87,8 @@ def game_over():
     bird_movement = 0
     floor_movement = 0
     pipe_movement = 0
-    screen.blit(game_over_surface, (100, 200))
     game_is_running = False
+    screen.blit(game_over_surface, (100, 200))
 
 def restart_game():
     global gravity
@@ -133,7 +138,7 @@ while True:
     #Floor
     floor_x_pos -= floor_movement
     draw_floor()
-    screen.blit(floor_surface,(floor_x_pos,900))
+    screen.blit(floor_surface,(floor_x_pos, floor_y_pos))
     if floor_x_pos <= -576:
         floor_x_pos = 0
     #takes everything before and draws it
