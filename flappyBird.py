@@ -37,7 +37,9 @@ pipe_surface = pygame.transform.scale2x(pipe_surface)
 pipe_roof = pygame.image.load('sprites/pipe-green.png')
 pipe_roof = pygame.transform.scale2x(pipe_roof)
 pipe_roof = pygame.transform.rotate(pipe_roof, 180)
+
 pipe_list = []
+
 SPAWNPIPE = pygame.USEREVENT
 pygame.time.set_timer(SPAWNPIPE,1200)
 
@@ -49,22 +51,23 @@ def draw_floor():
 
 def create_pipe():
     pipe_random_movement = random.randint(1, 400)
-    new_pipe = pipe_surface.get_rect(midtop = (600, 312 + pipe_random_movement))
-    return new_pipe
+    new_pipes = [pipe_surface.get_rect(midtop = (600, 312 + pipe_random_movement)), pipe_roof.get_rect(midtop = (600, -512 + pipe_random_movement))]
+    return new_pipes
 
 def move_pipes(pipes):  
     for pipe in pipes:
-        pipe.centerx -= pipe_movement
+        pipe[0].centerx -= pipe_movement
+        pipe[1].centerx -= pipe_movement 
     return pipes
 
 def draw_pipes(pipes):
     for pipe in pipes:
-        screen.blit(pipe_surface, pipe)
-        screen.blit(pipe_roof, pipe.move(0, -812))
+        screen.blit(pipe_surface, pipe[0])
+        screen.blit(pipe_roof, pipe[1])
 
 def check_collisions(pipes):
         for pipe in pipes:
-            if bird_rect.colliderect(pipe):
+            if bird_rect.colliderect(pipe[0]) or bird_rect.colliderect(pipe[1]):
                 game_over()
         if bird_rect.y >= 850:
             game_over()
