@@ -56,28 +56,29 @@ def move_pipes(pipes):
     for pipe in pipes:
         pipe.centerx -= pipe_movement
     return pipes
+
 def draw_pipes(pipes):
     for pipe in pipes:
         screen.blit(pipe_surface, pipe)
         screen.blit(pipe_roof, pipe.move(0, -812))
-        if bird_rect.colliderect(pipe):
-            print('bird collides with pipe')
 
-def check_collisions():
+def check_collisions(pipes):
+        for pipe in pipes:
+            if bird_rect.colliderect(pipe):
+                game_over()
         if bird_rect.y >= 850:
-            global gravity
-            global bird_movement
-            global floor_movement
-            global pipe_movement
-            global game_is_running
-            gravity = 0
-            bird_movement = 0
-            floor_movement = 0
-            pipe_movement = 0
             game_over()
 
 def game_over():
+    global gravity
+    global bird_movement   
+    global floor_movement
+    global pipe_movement
     global game_is_running
+    gravity = 0
+    bird_movement = 0
+    floor_movement = 0
+    pipe_movement = 0
     screen.blit(game_over_surface, (100, 200))
     game_is_running = False
 
@@ -122,9 +123,9 @@ while True:
     screen.blit(bird_surface, bird_rect)
 
     #Pipes
-    pipe_list = move_pipes(pipe_list) 
+    pipe_list = move_pipes(pipe_list)
     draw_pipes(pipe_list)
-    #if bird_rect == pipe_roof || pipe_surface
+    check_collisions(pipe_list)
 
     #Floor
     floor_x_pos -= floor_movement
@@ -132,7 +133,6 @@ while True:
     screen.blit(floor_surface,(floor_x_pos,900))
     if floor_x_pos <= -576:
         floor_x_pos = 0
-    check_collisions()
     #takes everything before and draws it
     pygame.display.update()
     #set framerate to 120fps
