@@ -1,3 +1,4 @@
+#from nis import match
 from os import pipe
 import pygame, sys, random
     
@@ -7,7 +8,9 @@ blue = (0, 0, 128)
 pygame.init()
 
 #create display surface
-screen = pygame.display.set_mode((576,1024))
+screen_width = 576
+scree_height = 1024
+screen = pygame.display.set_mode((screen_width, scree_height))
 clock = pygame.time.Clock()
 
 # Game Variables
@@ -16,7 +19,32 @@ bird_movement = 0
 floor_movement = 1
 pipe_movement = 5
 bird_starting_height = 512
+player_score = 0
 game_is_running = True
+
+score_zero_surface = pygame.image.load('sprites/0.png')
+score_zero_surface = pygame.transform.scale2x(score_zero_surface)
+score_one_surface = pygame.image.load('sprites/1.png')
+score_one_surface = pygame.transform.scale2x(score_one_surface)
+score_two_surface = pygame.image.load('sprites/2.png')
+score_two_surface = pygame.transform.scale2x(score_two_surface)
+score_three_surface = pygame.image.load('sprites/3.png')
+score_three_surface = pygame.transform.scale2x(score_three_surface)
+score_four_surface = pygame.image.load('sprites/4.png')
+score_four_surface = pygame.transform.scale2x(score_four_surface)
+score_five_surface = pygame.image.load('sprites/5.png')
+score_five_surface = pygame.transform.scale2x(score_five_surface)
+score_six_surface = pygame.image.load('sprites/6.png')
+score_six_surface = pygame.transform.scale2x(score_six_surface)
+score_seven_surface = pygame.image.load('sprites/7.png')
+score_seven_surface = pygame.transform.scale2x(score_seven_surface)
+score_eight_surface = pygame.image.load('sprites/8.png')
+score_eight_surface = pygame.transform.scale2x(score_eight_surface)
+score_nine_surface = pygame.image.load('sprites/9.png')
+score_nine_surface = pygame.transform.scale2x(score_nine_surface)
+score_character_distance = 52
+score_x_pos = (screen_width / 2) - (score_character_distance / 2)
+score_y_pos = 150
 
 game_over_surface = pygame.image.load('sprites/gameover.png')
 game_over_surface = pygame.transform.scale2x(game_over_surface)
@@ -62,8 +90,44 @@ def create_pipe():
 def move_pipes(pipes):  
     for pipe in pipes:
         pipe[0].centerx -= pipe_movement
-        pipe[1].centerx -= pipe_movement 
+        pipe[1].centerx -= pipe_movement
     return pipes
+
+def check_score():
+    global player_score
+    if len(pipe_list) > 0:
+        last_pipe = pipe_list[len(pipe_list) - 1]
+        if bird_rect.centerx == last_pipe[0].centerx:
+            player_score += 1   
+
+def draw_score():
+    global player_score
+    player_score_as_string = str(player_score)
+    player_score_length = len(player_score_as_string)
+    for i in range(player_score_length):
+        this_character = player_score_as_string[i]
+        score_x_pos_altered = (score_x_pos + score_character_distance * i) - (score_character_distance / 2 * (player_score_length - 1))
+        if this_character == "0":
+            screen.blit(score_zero_surface, (score_x_pos_altered, score_y_pos))
+        if this_character == "1":
+            screen.blit(score_one_surface, (score_x_pos_altered, score_y_pos))
+        if this_character == "2":
+            screen.blit(score_two_surface, (score_x_pos_altered, score_y_pos))
+        if this_character == "3":
+            screen.blit(score_three_surface, (score_x_pos_altered, score_y_pos))
+        if this_character == "4":
+            screen.blit(score_four_surface, (score_x_pos_altered, score_y_pos))
+        if this_character == "5":
+            screen.blit(score_five_surface, (score_x_pos_altered, score_y_pos))
+        if this_character == "6":
+            screen.blit(score_six_surface, (score_x_pos_altered, score_y_pos))
+        if this_character == "7":
+            screen.blit(score_seven_surface, (score_x_pos_altered, score_y_pos))
+        if this_character == "8":
+            screen.blit(score_eight_surface, (score_x_pos_altered, score_y_pos))
+        if this_character  == "9":
+            screen.blit(score_nine_surface, (score_x_pos_altered, score_y_pos))
+        
 
 def draw_pipes(pipes):
     for pipe in pipes:
@@ -88,7 +152,7 @@ def game_over():
     floor_movement = 0
     pipe_movement = 0
     game_is_running = False
-    screen.blit(game_over_surface, (100, 200))
+    screen.blit(game_over_surface, (100, 50))
 
 def restart_game():
     global gravity
@@ -96,12 +160,14 @@ def restart_game():
     global floor_movement
     global pipe_movement
     global pipe_list
+    global player_score
     global game_is_running
     gravity = 0.25
     bird_movement = 0
     floor_movement = 1
     pipe_movement = 5
     pipe_list = []
+    player_score = 9
     bird_rect.centery = bird_starting_height
     game_is_running = True
 
@@ -134,6 +200,10 @@ while True:
     pipe_list = move_pipes(pipe_list)
     draw_pipes(pipe_list)
     check_collisions(pipe_list)
+
+    #Score
+    check_score()
+    draw_score()
 
     #Floor
     floor_x_pos -= floor_movement
