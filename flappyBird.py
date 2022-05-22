@@ -20,6 +20,7 @@ floor_movement = 1
 pipe_movement = 5
 bird_starting_height = 512
 player_score = 0
+highscore = 0
 game_is_running = True
 
 score_zero_surface = pygame.image.load('sprites/0.png')
@@ -74,6 +75,28 @@ SPAWNPIPE = pygame.USEREVENT
 pygame.time.set_timer(SPAWNPIPE,1200)
 
 ######################################################################################################################################
+
+def load_highscore():
+    global highscore
+    # Using 'w' as in write because it creates the file if it does not exist and has the ability to read and write.
+    with open('highscore.txt', 'w') as file:
+        try:
+            highscore = file.read()
+            file.close()
+        except:
+            highscore = 0
+load_highscore()
+del load_highscore
+
+def save_highscore():
+    global highscore
+    with open('highscore.txt', 'w') as file:
+        try:
+            file.write(str(player_score))
+            file.close()
+            highscore = player_score
+        except:
+            print('Unable to save highscore')
 
 def draw_floor():
     screen.blit(floor_surface,(floor_x_pos, floor_y_pos))
@@ -153,6 +176,8 @@ def game_over():
     pipe_movement = 0
     game_is_running = False
     screen.blit(game_over_surface, (100, 50))
+    if player_score > highscore:
+        save_highscore()
 
 def restart_game():
     global gravity
@@ -167,7 +192,7 @@ def restart_game():
     floor_movement = 1
     pipe_movement = 5
     pipe_list = []
-    player_score = 9
+    player_score = 0
     bird_rect.centery = bird_starting_height
     game_is_running = True
 
