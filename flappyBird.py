@@ -1,5 +1,7 @@
 #from nis import match
+from cmath import log
 from os import pipe
+from pickle import FALSE, TRUE
 import pygame, sys, random
     
 green = (0, 255, 0)
@@ -22,7 +24,8 @@ bird_starting_height = 512
 player_score = 0
 highscore = 0
 bird_flapping_timer = 0
-game_is_running = True
+game_is_running = False
+pre_game = True
 
 score_zero_surface = pygame.image.load('sprites/0.png')
 score_zero_surface = pygame.transform.scale2x(score_zero_surface)
@@ -203,6 +206,7 @@ def restart_game():
     global pipe_list
     global player_score
     global game_is_running
+    global pre_game
     gravity = 0.25
     bird_movement = 0
     floor_movement = 1
@@ -211,9 +215,13 @@ def restart_game():
     player_score = 0
     bird_rect.centery = bird_starting_height
     game_is_running = True
+    pre_game = True
+    print(pre_game)
 
-######################################################################################################################################
+#TODO: set the game into an idle state after dying
+    
 
+#######################################################################################################################################
 while True: 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -226,23 +234,29 @@ while True:
                 bird_movement -= 8
             if event.key == pygame.K_SPACE and not game_is_running:
                 restart_game()
+            if event.key == pygame.K_SPACE and pre_game and game_is_running:
+                
+                pre_game = False
+                bird_movement = 0
+                bird_movement -= 8
         if event.type == SPAWNPIPE and game_is_running:
             pipe_list.append(create_pipe())
 
     #set img
     screen.blit(bg_surface,(0,0))
 
-    #Bird 
-    bird_movement += gravity
-    bird_rect.centery += bird_movement
+    #Bird
+    if not pre_game:
+        bird_movement += gravity
+        bird_rect.centery += bird_movement
     bird_flapping_timer += 1
     draw_bird()
-    
 
     #Pipes
-    pipe_list = move_pipes(pipe_list)
-    draw_pipes(pipe_list)
-    check_collisions(pipe_list)
+    if not pre_game:
+        pipe_list = move_pipes(pipe_list)
+        draw_pipes(pipe_list)
+        check_collisions(pipe_list)
 
     #Score
     check_score()
