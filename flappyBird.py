@@ -23,7 +23,8 @@ pipe_movement = 5
 bird_starting_height = 512
 player_score = 0
 highscore = 0
-game_is_running = True
+bird_flapping_timer = 0
+game_is_running = False
 pre_game = True
 
 score_zero_surface = pygame.image.load('sprites/0.png')
@@ -63,7 +64,13 @@ floor_y_pos = 900
 
 bird_surface = pygame.image.load('sprites/bluebird-midflap.png').convert()
 bird_surface = pygame.transform.scale2x(bird_surface)
-bird_rect = bird_surface.get_rect(center = (100, bird_starting_height))
+bird_rect = bird_surface.get_rect(center = (80, bird_starting_height))
+bird_surface_upflap = pygame.image.load('sprites/bluebird-upflap.png').convert()
+bird_surface_upflap = pygame.transform.scale2x(bird_surface_upflap)
+#bird_surface_upflap = pygame.transform.rotate(bird_surface_upflap, 45)
+bird_surface_downflap = pygame.image.load('sprites/bluebird-downflap.png').convert()
+bird_surface_downflap = pygame.transform.scale2x(bird_surface_downflap)
+#bird_surface_downflap = pygame.transform.rotate(bird_surface_downflap, -45)
 
 pipe_surface = pygame.image.load('sprites/pipe-green.png')
 pipe_surface = pygame.transform.scale2x(pipe_surface)
@@ -118,6 +125,15 @@ def move_pipes(pipes):
         pipe[0].centerx -= pipe_movement
         pipe[1].centerx -= pipe_movement
     return pipes
+
+def draw_bird():
+    global bird_flapping_timer
+    if bird_flapping_timer < 20:
+        screen.blit(bird_surface_upflap, bird_rect)
+    else:
+        screen.blit(bird_surface_downflap, bird_rect)
+    if bird_flapping_timer >= 40:
+        bird_flapping_timer = 0 
 
 def check_score():
     global player_score
@@ -219,7 +235,10 @@ while True:
             if event.key == pygame.K_SPACE and not game_is_running:
                 restart_game()
             if event.key == pygame.K_SPACE and pre_game and game_is_running:
+                
                 pre_game = False
+                bird_movement = 0
+                bird_movement -= 8
         if event.type == SPAWNPIPE and game_is_running:
             pipe_list.append(create_pipe())
 
@@ -230,7 +249,8 @@ while True:
     if not pre_game:
         bird_movement += gravity
         bird_rect.centery += bird_movement
-    screen.blit(bird_surface, bird_rect)
+    bird_flapping_timer += 1
+    draw_bird()
 
     #Pipes
     if not pre_game:
