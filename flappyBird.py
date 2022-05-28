@@ -1,7 +1,6 @@
 #from nis import match
 from cmath import log
 from os import pipe
-from pickle import FALSE, TRUE
 import pygame, sys, random
     
 green = (0, 255, 0)
@@ -16,10 +15,10 @@ screen = pygame.display.set_mode((screen_width, scree_height))
 clock = pygame.time.Clock()
 
 # Game Variables
-gravity = 0.25
+gravity = 0.18
 bird_movement = 0
 floor_movement = 1
-pipe_movement = 5
+pipe_movement = 2
 bird_starting_height = 512
 player_score = 0
 highscore = 0
@@ -82,7 +81,7 @@ pipe_starting_x = 600
 pipe_list = []
 
 SPAWNPIPE = pygame.USEREVENT
-pygame.time.set_timer(SPAWNPIPE,1200)
+pygame.time.set_timer(SPAWNPIPE, 1300)
 
 ######################################################################################################################################
 
@@ -137,8 +136,8 @@ def draw_bird():
 
 def check_score():
     global player_score
-    if len(pipe_list) > 0:
-        last_pipe = pipe_list[len(pipe_list) - 1]
+    if len(pipe_list) > 1:
+        last_pipe = pipe_list[len(pipe_list) - 2] 
         if bird_rect.centerx == last_pipe[0].centerx:
             player_score += 1   
 
@@ -207,10 +206,10 @@ def restart_game():
     global player_score
     global game_is_running
     global pre_game
-    gravity = 0.25
+    gravity = 0.18
     bird_movement = 0
     floor_movement = 1
-    pipe_movement = 5
+    pipe_movement = 2
     pipe_list = []
     player_score = 0
     bird_rect.centery = bird_starting_height
@@ -231,16 +230,17 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and game_is_running:
                 bird_movement = 0
-                bird_movement -= 8
+                bird_movement -= 5
             if event.key == pygame.K_SPACE and not game_is_running:
                 restart_game()
             if event.key == pygame.K_SPACE and pre_game and game_is_running:
                 
                 pre_game = False
                 bird_movement = 0
-                bird_movement -= 8
+                bird_movement -= 5
         if event.type == SPAWNPIPE and game_is_running:
             pipe_list.append(create_pipe())
+            print("new pipe", len(pipe_list))
 
     #set img
     screen.blit(bg_surface,(0,0))
