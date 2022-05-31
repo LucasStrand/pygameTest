@@ -76,7 +76,7 @@ pipe_surface = pygame.transform.scale2x(pipe_surface)
 pipe_roof = pygame.image.load('sprites/pipe-green.png')
 pipe_roof = pygame.transform.scale2x(pipe_roof)
 pipe_roof = pygame.transform.rotate(pipe_roof, 180)
-pipe_starting_x = 600
+pipe_starting_x = 680
 
 pipe_list = []
 
